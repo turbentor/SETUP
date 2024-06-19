@@ -3,3 +3,45 @@
   timezone:
     name: "Europe/Zurich"
 
+- name: remove default folder-structure
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /home/u/Desktop
+    - /home/u/Pictures
+    - /home/u/Videos
+    - /home/u/Documents
+    - /home/u/Music
+    - /home/u/Public
+    - /home/u/Templates
+
+
+- name: add my folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: u
+    group: u
+    mode: '0755'
+  with_items:
+    - /home/u/data
+    - /home/u/data/admin
+    - /home/u/data/archive
+    - /home/u/data/chronic
+    - /home/u/data/collections
+    - /home/u/data/projects
+    - /home/u/data/sport
+
+
+- name: copy dotfiles
+  copy:
+    src: ../../../dotfiles/{{ item.src }}
+    dest: /home/u/{{ item.dest }}
+    owner: u
+    group: u
+    mode: 0600
+  with_items:
+    - { src: 'vimrc', dest: '.vimrc' }
+    - { src: 'bashrc', dest: '.bashrc' }
+    - { src: 'gitconfig', dest: '.gitconfig' }
