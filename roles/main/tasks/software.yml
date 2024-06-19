@@ -1,0 +1,16 @@
+- name: install applications
+  apt:
+    name:
+      - vim
+      - htop
+      - curl
+      - git
+      - gnome-session
+      - gnome-terminal
+      - firefox
+      - gimp
+      - libreoffice
+      - drawing
+      - nemo
+    state: present
+    update_cache: true

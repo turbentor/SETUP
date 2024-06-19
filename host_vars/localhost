@@ -1,0 +1,17 @@
+---
+branch: master
+
+ansible_connection: local
+
+# application selection
+audacity: true
+chromium: true
+darktable: true
+firefox: true
+keepassxc: true
+libreoffice: true
+signal: true
+vlc: true
+
+# desktop environment selection
+gnome: true

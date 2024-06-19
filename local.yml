@@ -1,71 +1,36 @@
----
-- hosts: localhost
-  connection: local
+# pre-execution tasks
+- hosts: all
+  tags: always
+  become: true
+  pre_tasks:
+    - name: pre-run | update package cache (debian)
+      tags: always
+      apt: update_cache=yes
+      changed_when: False
+#      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+# run roles
+- hosts: all
+  tags: main
+  become: true
+  roles:
+    - main
+
+
+# post-execution tasks
+- hosts: all
   become: true
   tasks:
-    - name: install applications
-      apt:
-        name:
-          - vim
-          - htop
-          - curl
-          - git
-          - gnome-session
-          - gnome-terminal
-          - firefox
-          - gimp
-          - libreoffice
-          - drawing
-        state: present
-        update_cache: true
+  - name: cleanup package cache (debian)
+    tags: always
+    apt:
+      autoclean: yes
+    changed_when: False
+#    when: ansible_distribution in ["Debian", "Ubuntu"]
 
-    - name: remove default folder-structure
-      file:
-        path: "{{ item }}"
-        state: absent
-      with_items:
-        - /home/u/Desktop
-        - /home/u/Pictures
-        - /home/u/Videos
-        - /home/u/Documents
-        - /home/u/Music
-        - /home/u/Public
-        - /home/u/Templates
-
-    - name: add my folders
-      file:
-        path: "{{ item }}"
-        state: directory
-      with_items:
-        - /home/u/data
-        - /home/u/data/admin
-        - /home/u/data/archive
-        - /home/u/data/chronic
-        - /home/u/data/collections
-        - /home/u/data/projects
-        - /home/u/data/sport
-
-    - name: set permissions
-      file:
-        path: "{{ item }}"
-        owner: u
-        group: u
-        mode: '0755'
-      with_items:
-        - /home/u/data
-        - /home/u/data/admin
-        - /home/u/data/archive
-        - /home/u/data/chronic
-        - /home/u/data/collections
-        - /home/u/data/projects
-        - /home/u/data/sport
-
-    - name: copy vimrc
-      copy:
-        src: vimrc
-        dest: /home/u/.vimrc
-
-    - name: copy bashrc
-      copy:
-        src: bashrc
-        dest: /home/u/.bashrc
+  - name: autoremove orphan packages (debian)
+    tags: always
+    apt:
+      autoremove: yes
+      purge: yes
+#    when: ansible_distribution in ["Debian", "Ubuntu"]

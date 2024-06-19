@@ -1,0 +1,5 @@
+- name: system setup time
+  tags: ntp, timezone
+  timezone:
+    name: "Europe/Zurich"
+
